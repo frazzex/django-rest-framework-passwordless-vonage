@@ -159,7 +159,7 @@ def send_email_with_callback_token(user, email_token, **kwargs):
 
 def send_sms_with_callback_token(user, mobile_token, **kwargs):
     """
-    Sends a SMS to user.mobile via Twilio.
+    Sends a SMS to user.mobile via Vonage.
 
     Passes silently without sending in test environment.
     """
@@ -178,18 +178,23 @@ def send_sms_with_callback_token(user, mobile_token, **kwargs):
         if api_settings.PASSWORDLESS_MOBILE_NOREPLY_NUMBER:
             # We need a sending number to send properly
 
-            from twilio.rest import Client
-            twilio_client = Client(os.environ['TWILIO_ACCOUNT_SID'], os.environ['TWILIO_AUTH_TOKEN'])
+            from vonage import Client, Sms
+            vonage_client = Client(key=os.environ['VONAGE_KEY'], secret=os.environ['TWILIO_AUTH_TOKEN'])
+            sms = Sms(vonage_client)
 
             to_number = getattr(user, api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME)
             if to_number.__class__.__name__ == 'PhoneNumber':
                 to_number = to_number.__str__()
 
-            twilio_client.messages.create(
-                body=base_string % mobile_token.key,
-                to=to_number,
-                from_=api_settings.PASSWORDLESS_MOBILE_NOREPLY_NUMBER
-            )
+            response_data = sms.send_message({
+                'from': api_settings.PASSWORDLESS_MOBILE_NOREPLY_NUMBER,
+                'to': to_number,
+                'text': base_string % mobile_token.key
+            })
+            if response_data["messages"][0]["status"] == "0":
+                print("Message sent successfully.")
+            else:
+                print(f"Message failed with error: {response_data['messages'][0]['error-text']}")
             return True
         else:
             logger.debug("Failed to send token sms. Missing PASSWORDLESS_MOBILE_NOREPLY_NUMBER.")

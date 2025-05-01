@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 django = "*"
 djangorestframework = "*"
-twilio = "*"
+vonage = "*"
 
 [dev-packages]
 flake8 = "*"
@@ -15,11 +15,11 @@ pep8 = "*"
 pytest= "*"
 pytest-cov= "*"
 pytest-django= "*"
-requests = {version = ">=2.20.0"}
+requests = "2.32.0"
 setuptools-markdown = "*"
 twine = "*"
-urllib3 = {version = ">=1.23"}
-wheel = "*"
+urllib3 = "2.2.2"
+wheel = "0.38.1"
 tox = "*"
 
 [requires]
