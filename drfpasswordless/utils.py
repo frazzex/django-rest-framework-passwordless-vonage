@@ -179,7 +179,7 @@ def send_sms_with_callback_token(user, mobile_token, **kwargs):
             # We need a sending number to send properly
 
             from vonage import Client, Sms
-            vonage_client = Client(key=os.environ['VONAGE_KEY'], secret=os.environ['TWILIO_AUTH_TOKEN'])
+            vonage_client = Client(key=os.environ['VONAGE_KEY'], secret=os.environ['VONAGE_SECRET'])
             sms = Sms(vonage_client)
 
             to_number = getattr(user, api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME)
